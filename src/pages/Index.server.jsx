@@ -46,7 +46,7 @@ function HydrogenGettingStarted() {
   return (
     <section className="my-8 px-4 pt-10 pb-4">
       <h2 className="text-7xl mb-4 font-semibold tracking-tight">
-        Hello, Hydrogen
+        Hello, Eggie
       </h2>
 
       <p className="text-xl max-w-prose z-10 mix-blend-overlay">
