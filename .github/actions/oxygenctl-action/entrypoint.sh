@@ -13,4 +13,4 @@ oxygenctl deploy \
   --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$STORE_HOSTNAME".myshopify.dev"
+echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"-oxygen-sws.myshopify.dev"
