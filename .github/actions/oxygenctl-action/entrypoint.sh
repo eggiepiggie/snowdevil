@@ -4,7 +4,11 @@ export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 export COMMIT_SHA="$INPUT_SHA"
 
 # Read hostname from Hydrogen configuration file
-export STORE_HOSTNAME=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
+export OXYGEN_STORE_DOMAIN=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
+if [ $OXYGEN_STORE_DOMAIN == '' ]
+  echo "OXYGEN_STORE_DOMAIN cannot be empty"
+  exit 1
+fi
 
 oxygenctl --version
 oxygenctl deploy \
