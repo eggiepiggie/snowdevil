@@ -3,7 +3,6 @@ import {useHistory, useLocation} from 'react-router-dom';
 import {useShopQuery, MediaFile} from '@shopify/hydrogen';
 import Layout from '../components/Layout.client';
 import ProductCard from '../components/ProductCard.client';
-import gql from 'graphql-tag';
 
 /**
  * TODO: Refactor to a true server component.
@@ -77,8 +76,9 @@ function SearchResults({query}) {
   );
 }
 
-const QUERY = gql`
-  fragment SearchProductDetails on Product {
+const QUERY = `#graphql
+  ${MediaFile.Fragment}
+  fragment ProductDetails on Product {
     id
     title
     handle
@@ -95,11 +95,9 @@ const QUERY = gql`
     products(query: $query, first: 10) {
       edges {
         node {
-          ...SearchProductDetails
+          ...ProductDetails
         }
       }
     }
   }
-
-  ${MediaFile.Fragment}
 `;

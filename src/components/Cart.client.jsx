@@ -3,21 +3,20 @@ import {
   useCart,
   useCartLineItemCount,
   Money,
-  useRemoveLinesCallback,
-  useUpdateLinesCallback,
+  useRemoveLineCallback,
+  useUpdateLineQuantityCallback,
+  useCartCheckoutURL,
   CartToggle,
   CheckoutButton,
-  Link,
 } from '@shopify/hydrogen/client';
-import MediaPlaceholder from '../components/MediaPlaceholder';
 
 export default function Cart() {
   const itemCount = useCartLineItemCount();
 
   return (
-    <div className="rounded-2xl overflow-hidden shadow-xl">
+    <>
       <CartHeader />
-      <div className=" bg-white pl-8 pr-8 overflow-y-scroll">
+      <div className="flex-auto bg-gray-100 pl-8 pr-8 overflow-y-scroll">
         {itemCount > 0 ? (
           <CartLineItems />
         ) : (
@@ -25,7 +24,7 @@ export default function Cart() {
         )}
       </div>
       {itemCount > 0 ? <CartFooter /> : null}
-    </div>
+    </>
   );
 }
 
@@ -35,31 +34,13 @@ export function CartIcon() {
   return (
     <div className="relative">
       <svg
-        width="19"
-        height="24"
-        viewBox="0 0 19 24"
-        fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="h-full w-full text-gray-600"
+        viewBox="0 0 20 20"
+        fill="currentColor"
       >
-        <path
-          d="M15.5894 7H3.41063C2.89451 7 2.46318 7.39279 2.415 7.90666L1.205 20.8133C1.09502 21.9865 2.01796 23 3.19627 23H15.8037C16.982 23 17.905 21.9865 17.795 20.8133L16.585 7.90666C16.5368 7.39279 16.1055 7 15.5894 7Z"
-          stroke="#1F2937"
-          strokeWidth="2"
-          strokeMiterlimit="10"
-          strokeLinecap="round"
-        />
-        <path
-          d="M6 7V9.98952C6 12.0075 7.63589 13.6434 9.65386 13.6434V13.6434C11.6718 13.6434 13.3077 12.0075 13.3077 9.98952V7"
-          stroke="#1F2937"
-          strokeWidth="2"
-        />
-        <path
-          d="M13 6L13 4.5C13 2.567 11.433 1 9.5 1V1C7.567 1 6 2.567 6 4.5L6 6"
-          stroke="#1F2937"
-          strokeWidth="2"
-        />
+        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
       </svg>
-
       <div
         className={`bg-gray-900 text-xs rounded-full leading-none text-white absolute top-0 right-0 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2 transition-all ${
           itemCount > 0 ? 'h-4 w-4' : 'h-0 w-0 overflow-hidden'
@@ -101,8 +82,8 @@ function CartHeader() {
 
 function CartLineItems() {
   const {lines} = useCart();
-  const removeLines = useRemoveLinesCallback();
-  const updateLines = useUpdateLinesCallback();
+  const remove = useRemoveLineCallback();
+  const updateQuantity = useUpdateLineQuantityCallback();
 
   return (
     <div role="table" aria-label="Shopping cart">
@@ -116,22 +97,14 @@ function CartLineItems() {
           <div
             role="row"
             key={line.id}
-            className="pt-8 pb-8 border-b border-solid border-gray-300 last:border-0"
+            className="pt-8 pb-8 border-b border-solid border-gray-300"
           >
             <div className="flex space-x-8 relative">
               <div role="cell">
-                <div className="w-20 h-20 relative">
-                  <Link to={`/products/${line.merchandise.product.handle}`}>
-                    {line.merchandise.image ? (
-                      <Image
-                        className="bg-white rounded w-full h-full object-cover"
-                        image={line.merchandise.image}
-                      />
-                    ) : (
-                      <MediaPlaceholder />
-                    )}
-                  </Link>
-                </div>
+                <Image
+                  className="bg-white rounded w-20 h-20 object-cover"
+                  image={line.merchandise.image}
+                />
               </div>
               <div
                 role="cell"
@@ -140,7 +113,7 @@ function CartLineItems() {
                 <div className="flex">
                   <div className="flex-grow">
                     <p className="text-gray-900 font-semibold">
-                      {line.merchandise.product.title}
+                      {line.merchandise.title}
                     </p>
                     <ul className="text-sm">
                       {line.merchandise.selectedOptions.map((option) => {
@@ -155,7 +128,7 @@ function CartLineItems() {
                   <div className="flex-shrink">
                     <button
                       onClick={() => {
-                        removeLines([line.id]);
+                        remove(line.id);
                       }}
                     >
                       <svg
@@ -179,9 +152,7 @@ function CartLineItems() {
                     <div className="border border-solid border-gray-300 inline-flex items-center text-gray-500 rounded">
                       <button
                         onClick={() => {
-                          updateLines([
-                            {id: line.id, quantity: line.quantity - 1},
-                          ]);
+                          updateQuantity(line.id, line.quantity - 1);
                         }}
                         className="p-2"
                       >
@@ -204,9 +175,7 @@ function CartLineItems() {
                       </div>
                       <button
                         onClick={() => {
-                          updateLines([
-                            {id: line.id, quantity: line.quantity + 1},
-                          ]);
+                          updateQuantity(line.id, line.quantity + 1);
                         }}
                         className="p-2"
                       >
@@ -248,6 +217,7 @@ function CartLineItems() {
 
 function CartFooter() {
   const {subtotal} = useCart();
+  const checkoutURL = useCartCheckoutURL();
 
   return (
     <footer className="bg-white border-t border-solid border-gray-300 p-8 space-y-4">

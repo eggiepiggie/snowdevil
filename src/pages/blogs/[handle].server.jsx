@@ -1,7 +1,6 @@
 import {useParams} from 'react-router-dom';
-import {useShopQuery, RawHtml, Link} from '@shopify/hydrogen';
+import {useShopQuery, RTEText, Link} from '@shopify/hydrogen';
 import Layout from '../../components/Layout.client';
-import gql from 'graphql-tag';
 
 export default function Blog() {
   const {handle} = useParams();
@@ -29,7 +28,7 @@ export default function Blog() {
                 {article.author.name}
               </p>
 
-              <RawHtml string={article.contentHtml} className="mt-2 prose" />
+              <RTEText text={article.contentHtml} className="mt-2 prose" />
             </li>
           );
         })}
@@ -38,7 +37,7 @@ export default function Blog() {
   );
 }
 
-const QUERY = gql`
+const QUERY = `#graphql
   query BlogDetails($handle: String!) {
     blogByHandle(handle: $handle) {
       title

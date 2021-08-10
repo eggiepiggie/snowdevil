@@ -5,9 +5,7 @@ import indexHtml from './dist/client/index.html?raw';
 
 addEventListener('fetch', (event) => {
   try {
-    event.respondWith(
-      handleEvent(event, {entrypoint, indexHtml, cache: caches.default})
-    );
+    event.respondWith(handleEvent(event, entrypoint, indexHtml));
   } catch (error) {
     event.respondWith(
       new Response(error.message || error.toString(), {

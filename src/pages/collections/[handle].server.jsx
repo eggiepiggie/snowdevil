@@ -2,7 +2,6 @@ import {MediaFile, useShopQuery} from '@shopify/hydrogen';
 import {useParams} from 'react-router-dom';
 import Layout from '../../components/Layout.client';
 import ProductCard from '../../components/ProductCard.client';
-import gql from 'graphql-tag';
 
 export default function Collection() {
   const {handle} = useParams();
@@ -25,8 +24,9 @@ export default function Collection() {
   );
 }
 
-const QUERY = gql`
-  fragment CollectionProductDetails on Product {
+const QUERY = `#graphql
+  ${MediaFile.Fragment}
+  fragment ProductDetails on Product {
     id
     title
     handle
@@ -57,12 +57,10 @@ const QUERY = gql`
       products(first: 10) {
         edges {
           node {
-            ...CollectionProductDetails
+            ...ProductDetails
           }
         }
       }
     }
   }
-
-  ${MediaFile.Fragment}
 `;

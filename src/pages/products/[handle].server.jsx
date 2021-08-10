@@ -1,8 +1,6 @@
-import {useShopQuery, ProductProviderFragment} from '@shopify/hydrogen';
+import {useShopQuery, MediaGalleryFragment} from '@shopify/hydrogen';
 import {useParams} from 'react-router-dom';
 import ProductDetails from '../../components/ProductDetails.client';
-import NotFound from '../../components/NotFound.server';
-import gql from 'graphql-tag';
 
 export default function Product() {
   const {handle} = useParams();
@@ -12,32 +10,63 @@ export default function Product() {
     variables: {handle},
   });
 
-  if (!data.product) {
-    return <NotFound />;
-  }
-
   return <ProductDetails data={data} />;
 }
 
-const QUERY = gql`
+const QUERY = `#graphql
+  ${MediaGalleryFragment}
+
   query product($handle: String!) {
     product: productByHandle(handle: $handle) {
       id
+      title
       vendor
-      seo {
-        title
-        description
+      body: descriptionHtml
+      options {
+        id
+        name
+        values
       }
-      images(first: 1) {
+      variants(first: 250) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
         edges {
           node {
-            originalSrc
+            id
+            title
+            availableForSale
+            image {
+              ...ImageFragment
+            }
+            priceV2 {
+              amount
+              currencyCode
+            }
+            compareAtPriceV2 {
+              amount
+              currencyCode
+            }
+            selectedOptions {
+              name
+              value
+            }
           }
         }
       }
-      ...ProductProviderFragment
+      media(first: 6) {
+        ...MediaGalleryFragment
+      }
+      collections(first: 5) {
+        edges {
+          node {
+            id
+            title
+            handle
+          }
+        }
+      }
     }
   }
-
-  ${ProductProviderFragment}
 `;
