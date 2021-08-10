@@ -16,6 +16,10 @@ jobs:
           //npm.shopify.io/node/:_authToken=${{ secrets.NPM_TOKEN }}
           EOF
 
+      # Read shopfiy.config.js
+      - name: Read Shopify configuration file
+        run: cat shopify.config.js
+
       # Install dependencies
       - name: Setup node.js
         uses: actions/setup-node@v2
