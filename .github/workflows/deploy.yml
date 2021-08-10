@@ -18,7 +18,7 @@ jobs:
 
       # Read shopfiy.config.js
       - name: Read Shopify configuration file
-        run: cat shopify.config.js
+        run: export STORE_HOSTNAME=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
 
       # Install dependencies
       - name: Setup node.js

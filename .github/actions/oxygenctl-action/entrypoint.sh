@@ -9,5 +9,7 @@ oxygenctl deploy \
   --worker-file "$INPUT_OXYGEN_WORKER_FILE" \
   --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
 
+echo $STORE_HOSTNAME
+
 # Hardcoded URL for now
 echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$INPUT_HOSTNAME".myshopify.dev"
