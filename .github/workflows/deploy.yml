@@ -20,7 +20,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '15'
           check-latest: true
       - name: Get yarn cache directory
         id: yarn-cache-dir-path
@@ -44,6 +44,8 @@ jobs:
         uses: ./.github/actions/oxygenctl-action
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          sha: ${{ github.sha }}
+          # TODO: Fetch hostname here.
 
       # Create GitHub Deployment for tracking deploy
       - name: Create GitHub Deployment
@@ -53,7 +55,7 @@ jobs:
           sha: ${{ github.sha }}
           token: ${{ github.token }}
           creator: ${{ github.actor }}
-          environment: 'production'
+          environment: 'preview'
           preview_url: ${{ steps.oxygen-deploy.outputs.url }}
           description: ${{ github.event.head_commit.message }}
 

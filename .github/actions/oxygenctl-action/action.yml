@@ -7,15 +7,25 @@ inputs:
   oxygen_deployment_token:
     description: The JWT deployment token
     required: true
+  # oxygen_shop_id:
+  #   description: The id of the shop
+  #   required: true
   oxygen_dms_address:
     description: The Oxygen DMS address as in hostname-or-IPv4:port
-    default: oxygen-dms.shopifycloud.com
+    # default: oxygen-dms-staging.shopifycloud.com # Temp
+    default: oxygen-dms.shopifysvc.com
   oxygen_worker_file:
     description: The name of the worker file
     default: dist/worker/worker.js
   oxygen_assets_dir:
     description: The name of the assets directory
     default: dist/client/assets
+  hostname:
+    description: 'Shop hostname'
+    default: oxygen-sws
+  sha:
+    description: 'Commit sha to be deployed'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'

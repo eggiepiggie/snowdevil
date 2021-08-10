@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
+export COMMIT_SHA="$INPUT_SHA"
 
 oxygenctl --version
 oxygenctl deploy \
@@ -9,4 +10,4 @@ oxygenctl deploy \
   --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://project-h2.myshopify.dev"
+echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$INPUT_HOSTNAME".myshopify.dev"
