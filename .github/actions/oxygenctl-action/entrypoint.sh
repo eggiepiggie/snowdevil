@@ -6,6 +6,7 @@ export COMMIT_SHA="$INPUT_SHA"
 # Read hostname from Hydrogen configuration file
 export OXYGEN_STORE_DOMAIN=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
 if [ $OXYGEN_STORE_DOMAIN == '' ]
+then
   echo "OXYGEN_STORE_DOMAIN cannot be empty"
   exit 1
 fi
