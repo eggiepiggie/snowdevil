@@ -12,4 +12,4 @@ oxygenctl deploy \
 echo $STORE_HOSTNAME
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$INPUT_HOSTNAME".myshopify.dev"
+echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$STORE_HOSTNAME".myshopify.dev"
