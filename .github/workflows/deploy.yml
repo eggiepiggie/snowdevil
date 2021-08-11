@@ -16,11 +16,15 @@ jobs:
           //npm.shopify.io/node/:_authToken=${{ secrets.NPM_TOKEN }}
           EOF
 
+      # Read shopfiy.config.js
+      - name: Read Shopify configuration file
+        run: export STORE_HOSTNAME=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
+
       # Install dependencies
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '15'
+          node-version: '15.9.0'
           check-latest: true
       - name: Get yarn cache directory
         id: yarn-cache-dir-path

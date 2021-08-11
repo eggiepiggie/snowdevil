@@ -3,6 +3,14 @@
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 export COMMIT_SHA="$INPUT_SHA"
 
+# Read hostname from Hydrogen configuration file
+export OXYGEN_STORE_DOMAIN=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
+if [ -z $OXYGEN_STORE_DOMAIN ]
+then
+  echo "OXYGEN_STORE_DOMAIN cannot be empty"
+  exit 1
+fi
+
 oxygenctl --version
 oxygenctl deploy \
   --assets-dir "$INPUT_OXYGEN_ASSETS_DIR" \
@@ -10,4 +18,4 @@ oxygenctl deploy \
   --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://"${COMMIT_SHA:0:12}"-"$INPUT_HOSTNAME".myshopify.dev"
+echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"-oxygen-sws.myshopify.dev"

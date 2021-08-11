@@ -47,8 +47,6 @@ export default defineConfig({
           'focus-trap-react',
           'html-react-parser',
           'html-dom-parser',
-          'react-helmet-async',
-          'graphql-tag',
         ]
       : [],
   },
@@ -56,7 +54,7 @@ export default defineConfig({
   // TODO: Move this to the @shopify/hydrogen plugin
   optimizeDeps: {
     /**
-     * Additionally, the following dependencies have trouble loading the
+     * Additionally, `html-dom-parser` and `html-react-parser` both have trouble loading the
      * correct version of the dependency (server vs client). This tells Vite to take the
      * server versions and optimize them for ESM.
      */
@@ -64,7 +62,6 @@ export default defineConfig({
       'html-dom-parser',
       'html-react-parser',
       'focus-trap-react',
-      'react-helmet-async',
     ],
   },
 });

@@ -20,9 +20,6 @@ inputs:
   oxygen_assets_dir:
     description: The name of the assets directory
     default: dist/client/assets
-  hostname:
-    description: 'Shop hostname'
-    default: oxygen-sws
   sha:
     description: 'Commit sha to be deployed'
     required: true

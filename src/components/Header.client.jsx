@@ -1,16 +1,15 @@
 import {Link, CartToggle} from '@shopify/hydrogen/client';
 import {CartIcon} from './Cart.client';
-import VibrantView from './VibrantView.client';
 
 export default function Header() {
   return (
     <>
-      <VibrantView>
-        <header
-          className="flex items-center justify-between pt-3 md:pt-12 md:pb-4 md:px-8 max-w-7xl mx-auto"
-          role="banner"
-        >
-          <CartToggle className="md:hidden p-4 mix-blend-overlay z-40 relative">
+      <header
+        className="bg-white border-b border-gray-300 border-solid h-20 flex items-center"
+        role="banner"
+      >
+        <div className="md:px-4 flex items-center justify-between max-w-7xl mx-auto flex-grow text-gray-500">
+          <CartToggle className="md:hidden p-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8"
@@ -25,7 +24,7 @@ export default function Header() {
             </svg>
           </CartToggle>
           <nav>
-            <ul className="hidden md:flex items-center justify-center space-x-6 font-medium text-black mix-blend-overlay z-40 relative">
+            <ul className="hidden md:flex items-center justify-center space-x-4 font-medium">
               <li>
                 <Link to="/">Home</Link>
               </li>
@@ -34,7 +33,7 @@ export default function Header() {
                   Collections
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-gray-700"
+                    className="h-5 w-5 text-gray-500"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -49,18 +48,18 @@ export default function Header() {
             </ul>
           </nav>
           <Link
-            className="text-center font-medium uppercase text-2xl tracking-widest absolute left-1/2 transform -translate-x-1/2 text-blackrew text-white mix-blend-overlay z-40"
+            className="text-center font-medium uppercase text-2xl tracking-widest absolute left-1/2 transform -translate-x-1/2"
             to="/"
           >
-            Snowdevil
+            Custom Store
           </Link>
           <div className="flex space-x-2 items-center">
-            <CartToggle className="h-12 w-12 p-2 mr-2 md:mr-0 md:h-7 md:w-7 md:p-0 mix-blend-overlay z-10">
+            <CartToggle className="h-12 w-12 p-2 mr-2 md:mr-0 md:h-7 md:w-7 md:p-0">
               <CartIcon />
             </CartToggle>
           </div>
-        </header>
-      </VibrantView>
+        </div>
+      </header>
     </>
   );
 }

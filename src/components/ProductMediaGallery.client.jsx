@@ -1,7 +1,20 @@
-import {useCallback, useEffect, useState} from 'react';
-import {useMediaGallery, Image, MediaFile} from '@shopify/hydrogen/client';
+import {useCallback, useEffect, useState, useMemo} from 'react';
+import {
+  MediaGalleryProvider,
+  useMediaGallery,
+  Image,
+  MediaFile,
+} from '@shopify/hydrogen/client';
 
-export default function Gallery() {
+export default function ProductMediaGallery({media}) {
+  return (
+    <MediaGalleryProvider mediaConnection={media}>
+      <Gallery />
+    </MediaGalleryProvider>
+  );
+}
+
+function Gallery() {
   const {mediaGalleryOpen} = useMediaGallery();
 
   return (
@@ -22,8 +35,8 @@ function GalleryPreview() {
   const [hoveredImage, setHoveredImage] = useState();
 
   return (
-    <ul className="grid lg:grid-cols-2 gap-10">
-      {previewImages.slice(1).map((image) => {
+    <ul className="grid lg:grid-cols-2 gap-x-12 gap-y-12 grid-rows-3 ">
+      {previewImages.map((image) => {
         return (
           <li
             key={image.id}
@@ -32,10 +45,10 @@ function GalleryPreview() {
             onMouseLeave={() => setHoveredImage()}
           >
             <Image
-              className="w-full bg-white rounded-3xl object-cover cursor-pointer shadow-2xl h-100 w-full"
+              className="w-full h-96 bg-white rounded object-cover cursor-pointer"
               image={image.image}
               options={{
-                height: '1000',
+                height: '400',
                 crop: 'center',
               }}
               onClick={() => {
@@ -45,7 +58,7 @@ function GalleryPreview() {
             />
             {(image.parentMediaType === 'VIDEO' ||
               image.parentMediaType === 'EXTERNAL_VIDEO') && (
-              <div className="pointer-events-none bg-gray-500 bg-opacity-50 backdrop-filter backdrop-blur-xl  text-white rounded-full h-12 w-12 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+              <div className="pointer-events-none opacity-80 rounded-full h-12 w-12 bg-white absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center text-gray-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -61,7 +74,7 @@ function GalleryPreview() {
               </div>
             )}
             {image.parentMediaType === 'IMAGE' && image.id === hoveredImage && (
-              <div className="pointer-events-none bg-gray-500 bg-opacity-50 backdrop-filter backdrop-blur-xl  text-white rounded-full h-12 w-12 bg-white absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+              <div className="pointer-events-none opacity-80 rounded-full h-12 w-12 bg-white absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center text-gray-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -239,10 +252,10 @@ function GalleryOverlay() {
 
   return (
     <div
-      className={`flex items-center justify-center fixed top-0 left-0 right-0 bottom-0 z-30`}
+      className={`flex items-center justify-center fixed top-0 left-0 right-0 bottom-0`}
     >
       <div
-        className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60"
+        className="z-10 absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60"
         onClick={() => {
           setMediaGalleryOpen(false);
         }}

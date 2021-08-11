@@ -1,6 +1,5 @@
 import {Image, Link, Money} from '@shopify/hydrogen/client';
 import MediaPlaceholder from './MediaPlaceholder';
-import {VariantPrice} from '../components/SelectedVariantPrice.client';
 
 export default function ProductCard({product}) {
   const firstVariant = product?.variants?.edges[0]?.node;
@@ -8,27 +7,32 @@ export default function ProductCard({product}) {
   if (!product) return null;
 
   return (
-    <div className="first:col-span-2 flex flex-col justify-center rounded-3xl overflow-hidden shadow-2xl">
+    <div className="flex flex-col justify-center md:space-y-4">
       <Link to={`/products/${product.handle}`}>
         {firstVariant?.image ? (
           <Image
-            className="w-full h-100 object-cover"
+            className="w-full md:rounded md:h-96 md:w-96 object-cover bg-gray-100"
             image={firstVariant?.image}
-            style={{backgroundColor: 'rgba(255, 255, 255, 0.5)'}}
-            options={{width: '1600', crop: 'center'}}
+            options={{height: '390', crop: 'center'}}
           />
         ) : (
-          <div className="w-full h-96 md:h-60 lg:h-96">
+          <div className="h-96 w-96">
             <MediaPlaceholder text="Upload a product image in the admin" />
           </div>
         )}
       </Link>
-      <div className="p-5">
-        <h3 className="font-semibold text-black">
+      <div className="space-y-2 px-4 pt-2 pb-8 md:p-0">
+        <h3 className="font-bold">
           <Link to={`/products/${product.handle}`}>{product.title}</Link>
         </h3>
-        <div className="mt-2">
-          <VariantPrice variant={firstVariant} />
+        <div className="flex items-center space-x-2">
+          {firstVariant?.priceV2 && <Money money={firstVariant.priceV2} />}
+          {firstVariant?.compareAtPriceV2 && (
+            <Money
+              className="line-through text-gray-500"
+              money={firstVariant.compareAtPriceV2}
+            />
+          )}
         </div>
       </div>
     </div>
