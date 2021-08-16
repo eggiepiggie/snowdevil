@@ -16,7 +16,7 @@ oxygenctl deploy \
   --assets-dir "$INPUT_OXYGEN_ASSETS_DIR" \
   --worker-file "$INPUT_OXYGEN_WORKER_FILE" \
   --dms-address "$INPUT_OXYGEN_DMS_ADDRESS" \
-  --store-domain "test-preview.myshopify.com"
+  --store-domain "eggie-preview.myshopify.com"
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"-test-preview.myshopify.dev"
+echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"-eggie-preview.myshopify.dev"
