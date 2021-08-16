@@ -51,7 +51,7 @@ export default function Header() {
             className="text-center font-medium uppercase text-2xl tracking-widest absolute left-1/2 transform -translate-x-1/2"
             to="/"
           >
-            Custom Store
+            Eggie Store
           </Link>
           <div className="flex space-x-2 items-center">
             <CartToggle className="h-12 w-12 p-2 mr-2 md:mr-0 md:h-7 md:w-7 md:p-0">
