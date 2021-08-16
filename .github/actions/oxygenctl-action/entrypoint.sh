@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eou pipefail
 
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 
