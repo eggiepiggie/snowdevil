@@ -12,8 +12,8 @@ inputs:
   #   required: true
   oxygen_dms_address:
     description: The Oxygen DMS address as in hostname-or-IPv4:port
-    # default: oxygen-dms-staging.shopifycloud.com # Temp
-    default: oxygen-dms.shopifysvc.com
+    default: oxygen-dms-staging.shopifycloud.com # Alok Test
+    # default: oxygen-dms.shopifysvc.com
   oxygen_worker_file:
     description: The name of the worker file
     default: dist/worker/worker.js
