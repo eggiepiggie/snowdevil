@@ -18,4 +18,4 @@ oxygenctl deploy \
   --store-domain "eggie-preview.myshopify.com"
 
 # Hardcoded URL for now
-echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"-eggie-preview.myshopify.dev"
+echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"--eggie-preview.myshopify.dev"
