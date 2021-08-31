@@ -5,12 +5,18 @@ import indexHtml from './dist/client/index.html?raw';
 
 addEventListener('fetch', (event) => {
   try {
-    event.respondWith(handleEvent(event, entrypoint, indexHtml));
+    event.respondWith(
+      handleEvent(event, {
+        entrypoint,
+        indexTemplate: indexHtml,
+        cache: caches.default,
+      }),
+    );
   } catch (error) {
     event.respondWith(
       new Response(error.message || error.toString(), {
         status: 500,
-      })
+      }),
     );
   }
 });

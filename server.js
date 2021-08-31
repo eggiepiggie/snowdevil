@@ -2,13 +2,11 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+
 // TODO: Make it so we don't have to call `.default` at the end of this
-const hydrogenMiddleware = require('@shopify/h2-internal/middleware').default;
+const hydrogenMiddleware = require('@shopify/hydrogen/middleware').default;
 
 const resolve = (p) => path.resolve(__dirname, p);
-
-// @ts-ignore
-globalThis.fetch = require('node-fetch');
 
 async function createServer() {
   const indexProd = fs.readFileSync(resolve('dist/client/index.html'), 'utf-8');
@@ -19,7 +17,7 @@ async function createServer() {
   app.use(
     require('serve-static')(resolve('dist/client'), {
       index: false,
-    })
+    }),
   );
 
   app.use(
@@ -28,8 +26,7 @@ async function createServer() {
       getServerEntrypoint: () =>
         require('./dist/server/entry-server.js').default,
       indexTemplate: indexProd,
-      // TODO: Find a way to load and pass `shopify.config.js` here.
-    })
+    }),
   );
 
   return {app};

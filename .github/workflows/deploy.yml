@@ -8,23 +8,11 @@ jobs:
       # Checkout code
       - uses: actions/checkout@v2
 
-      # Hack to download node deps before h2 is public:
-      - name: .npmrc hack
-        run: |
-          cat <<-EOF > .npmrc
-          @shopify:registry=https://npm.shopify.io/node/
-          //npm.shopify.io/node/:_authToken=${{ secrets.NPM_TOKEN }}
-          EOF
-
-      # Read shopfiy.config.js
-      - name: Read Shopify configuration file
-        run: export STORE_HOSTNAME=$(sed -n "s/.*storeDomain.*'\(.*\)'.*/\1/p" shopify.config.js)
-
       # Install dependencies
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '15.9.0'
+          node-version: '14'
           check-latest: true
       - name: Get yarn cache directory
         id: yarn-cache-dir-path
@@ -36,30 +24,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install dependencies
+        id: 'install-dependencies'
         run: yarn
 
       # Production build
       - name: Build
+        id: storefront-build
         run: yarn build
 
-      # Deploy to Oxygen
-      - name: Deploy
-        id: oxygen-deploy
-        uses: ./.github/actions/oxygenctl-action
+      # Publish to Oxygen
+      - name: Publish
+        id: deploy
+        uses: shopify/oxygenctl-action@v1
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
-          sha: ${{ github.sha }}
-          # TODO: Fetch hostname here.
 
-      # Create GitHub Deployment for tracking deploy
+      # Create GitHub Deployment
       - name: Create GitHub Deployment
-        uses: ./.github/actions/github-deployment-action
+        uses: shopify/github-deployment-action@v1
+        if: always()
         with:
-          ref: ${{ github.ref }}
-          sha: ${{ github.sha }}
           token: ${{ github.token }}
-          creator: ${{ github.actor }}
           environment: 'preview'
-          preview_url: ${{ steps.oxygen-deploy.outputs.url }}
+          preview_url: ${{ steps.deploy.outputs.url }}
           description: ${{ github.event.head_commit.message }}
-

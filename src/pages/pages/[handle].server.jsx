@@ -1,5 +1,7 @@
 import {useParams} from 'react-router-dom';
-import {useShopQuery, RTEText} from '@shopify/hydrogen';
+import {useShopQuery, RawHtml} from '@shopify/hydrogen';
+import gql from 'graphql-tag';
+
 import Layout from '../../components/Layout.client';
 
 export default function Page() {
@@ -11,12 +13,12 @@ export default function Page() {
   return (
     <Layout>
       <h1 className="text-2xl font-bold">{page.title}</h1>
-      <RTEText text={page.body} className="prose mt-8" />
+      <RawHtml string={page.body} className="prose mt-8" />
     </Layout>
   );
 }
 
-const QUERY = `#graphql
+const QUERY = gql`
   query PageDetails($handle: String!) {
     pageByHandle(handle: $handle) {
       title
