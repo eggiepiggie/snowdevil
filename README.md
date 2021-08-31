@@ -1,17 +1,31 @@
-# Hydrogen app for [Eggie Craft Avenue](https://eggie-craft-avenue.myshopify.com)
+# Hydrogen App
 
-### Start developing
+Hydrogen is a React framework and SDK that you can use to build fast and dynamic Shopify custom storefronts.
+
+[Check out the docs](https://shopify.dev/beta/hydrogen)
+
+## Getting started
+
+**Requirements:**
+
+- Node v14+
+- Yarn
+
 ```bash
-# Clone the repository to your local machine.
-git clone https://github.com/eggiepiggie/snowdevil
-
-# Install the necessary dependencies.
-cd snowdevil && yarn
-
-# Run the build process and start the local server.
+yarn
 yarn dev
 ```
 
-- For reference, [read the Hydrogen Docs](https://github.com/Shopify/hydrogen)<br>
-- Manage the Hydrogen App from your [Admin Panel](https://eggie-craft-avenue.myshopify.com/admin/hydrogen/snowdevil)
+Remember to update `shopify.config.js` with your shop's domain and Storefront API token!
 
+## Building for production
+
+```bash
+yarn build
+```
+
+Then, you can run a local `server.js` using the production build with:
+
+```bash
+yarn serve
+```

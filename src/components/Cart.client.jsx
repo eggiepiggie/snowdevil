@@ -1,48 +1,89 @@
 import {
-  Image,
   useCart,
-  useCartLineItemCount,
+  useCartLinesTotalQuantity,
   Money,
-  useRemoveLineCallback,
-  useUpdateLineQuantityCallback,
-  useCartCheckoutURL,
   CartToggle,
-  CheckoutButton,
+  CartCheckoutButton,
+  Link,
+  CartLines,
+  CartLine,
+  CartShopPayButton,
 } from '@shopify/hydrogen/client';
 
 export default function Cart() {
-  const itemCount = useCartLineItemCount();
+  const itemCount = useCartLinesTotalQuantity();
+  const {error} = useCart();
 
   return (
-    <>
-      <CartHeader />
-      <div className="flex-auto bg-gray-100 pl-8 pr-8 overflow-y-scroll">
-        {itemCount > 0 ? (
-          <CartLineItems />
-        ) : (
-          <p className="text-center text-gray-600 my-8">Your cart is empty</p>
-        )}
+    <div className="overflow-hidden md:h-auto pointer-events-auto">
+      <div className="flex flex-col shadow-xl max-h-full">
+        <header className="bg-white px-4 md:px-8 md:h-20 border-b border-gray-300 border-solid rounded-t-md flex flex-shrink-0 items-center justify-between">
+          <CartHeader />
+        </header>
+
+        <div className="bg-white px-4 md:px-8 overflow-y-scroll md:max-h-96">
+          {itemCount > 0 ? (
+            <CartLineItems />
+          ) : (
+            <p className="text-center text-gray-600 my-8">Your cart is empty</p>
+          )}
+        </div>
+
+        {error ? (
+          <div
+            className="border bg-red-200 border-red-400 text-red-800 mb-4 mx-8 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            {error}
+          </div>
+        ) : null}
+
+        <footer
+          className={`${
+            itemCount > 0 ? 'border-t border-solid border-gray-300' : ''
+          } bg-white p-4 md:p-8 space-y-4 flex-shrink-0 rounded-b-md`}
+        >
+          {itemCount > 0 ? <CartFooter /> : null}
+        </footer>
       </div>
-      {itemCount > 0 ? <CartFooter /> : null}
-    </>
+    </div>
   );
 }
 
 export function CartIcon() {
-  const itemCount = useCartLineItemCount();
+  const itemCount = useCartLinesTotalQuantity();
 
   return (
     <div className="relative">
       <svg
+        width="19"
+        height="24"
+        viewBox="0 0 19 24"
+        fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-full w-full text-gray-600"
-        viewBox="0 0 20 20"
-        fill="currentColor"
       >
-        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+        <path
+          d="M15.5894 7H3.41063C2.89451 7 2.46318 7.39279 2.415 7.90666L1.205 20.8133C1.09502 21.9865 2.01796 23 3.19627 23H15.8037C16.982 23 17.905 21.9865 17.795 20.8133L16.585 7.90666C16.5368 7.39279 16.1055 7 15.5894 7Z"
+          stroke="#1F2937"
+          strokeWidth="2"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M6 7V9.98952C6 12.0075 7.63589 13.6434 9.65386 13.6434V13.6434C11.6718 13.6434 13.3077 12.0075 13.3077 9.98952V7"
+          stroke="#1F2937"
+          strokeWidth="2"
+        />
+        <path
+          d="M13 6L13 4.5C13 2.567 11.433 1 9.5 1V1C7.567 1 6 2.567 6 4.5L6 6"
+          stroke="#1F2937"
+          strokeWidth="2"
+          className={`${itemCount > 0 ? 'block' : 'hidden'}`}
+        />
       </svg>
+
       <div
-        className={`bg-gray-900 text-xs rounded-full leading-none text-white absolute top-0 right-0 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2 transition-all ${
+        className={`bg-blue-600 text-xs rounded-full leading-none text-white absolute bottom-0 right-0 flex items-center justify-center transform translate-y-1/2 transition-all ${
           itemCount > 0 ? 'h-4 w-4' : 'h-0 w-0 overflow-hidden'
         }`}
       >
@@ -55,7 +96,7 @@ export function CartIcon() {
 
 function CartHeader() {
   return (
-    <header className="px-7 h-20 bg-white border-b border-gray-300 border-solid flex items-center justify-between">
+    <>
       <CartToggle>
         <div>
           <svg
@@ -76,15 +117,11 @@ function CartHeader() {
       <div className="h-12 w-12 p-2 md:h-7 md:w-7 md:p-0">
         <CartIcon />
       </div>
-    </header>
+    </>
   );
 }
 
 function CartLineItems() {
-  const {lines} = useCart();
-  const remove = useRemoveLineCallback();
-  const updateQuantity = useUpdateLineQuantityCallback();
-
   return (
     <div role="table" aria-label="Shopping cart">
       <div role="row" className="sr-only">
@@ -92,44 +129,46 @@ function CartLineItems() {
         <div role="columnheader">Item details</div>
         <div role="columnheader">Price</div>
       </div>
-      {lines.map((line) => {
-        return (
+      <CartLines>
+        {({merchandise}) => (
           <div
             role="row"
-            key={line.id}
-            className="pt-8 pb-8 border-b border-solid border-gray-300"
+            className="pt-8 pb-8 border-b border-solid border-gray-300 last:border-0"
           >
             <div className="flex space-x-8 relative">
               <div role="cell">
-                <Image
-                  className="bg-white rounded w-20 h-20 object-cover"
-                  image={line.merchandise.image}
-                />
+                <div className="w-20 h-20 relative">
+                  <Link to={`/products/${merchandise.product.handle}`}>
+                    <CartLine.Image className="bg-white rounded w-full h-full object-cover" />
+                  </Link>
+                </div>
               </div>
               <div
                 role="cell"
                 className="flex-grow flex flex-col justify-between"
               >
-                <div className="flex">
+                <div className="flex gap-2">
                   <div className="flex-grow">
-                    <p className="text-gray-900 font-semibold">
-                      {line.merchandise.title}
-                    </p>
-                    <ul className="text-sm">
-                      {line.merchandise.selectedOptions.map((option) => {
-                        return (
-                          <li key={`${option.name}${option.value}`}>
-                            {option.name}: {option.value}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    <CartLine.ProductTitle className="text-gray-900 font-semibold" />
+                    <CartLine.SelectedOptions className="text-sm">
+                      {({name, value}) => (
+                        <>
+                          {name}: {value}
+                        </>
+                      )}
+                    </CartLine.SelectedOptions>
+                    <CartLine.Attributes className="text-sm">
+                      {({key, value}) => (
+                        <>
+                          {key}: {value}
+                        </>
+                      )}
+                    </CartLine.Attributes>
                   </div>
                   <div className="flex-shrink">
-                    <button
-                      onClick={() => {
-                        remove(line.id);
-                      }}
+                    <CartLine.QuantityAdjustButton
+                      adjust="remove"
+                      aria-label="Remove from cart"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -143,18 +182,16 @@ function CartLineItems() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="sr-only">Remove from cart</span>
-                    </button>
+                    </CartLine.QuantityAdjustButton>
                   </div>
                 </div>
                 <div className="flex mt-2">
                   <div className="flex-grow">
                     <div className="border border-solid border-gray-300 inline-flex items-center text-gray-500 rounded">
-                      <button
-                        onClick={() => {
-                          updateQuantity(line.id, line.quantity - 1);
-                        }}
+                      <CartLine.QuantityAdjustButton
+                        adjust="decrease"
                         className="p-2"
+                        aria-label="Decrease quantity"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -168,16 +205,15 @@ function CartLineItems() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span className="sr-only">Decrease quantity</span>
-                      </button>
-                      <div className="p-2 text-gray-900 text-center">
-                        {line.quantity}
-                      </div>
-                      <button
-                        onClick={() => {
-                          updateQuantity(line.id, line.quantity + 1);
-                        }}
+                      </CartLine.QuantityAdjustButton>
+                      <CartLine.Quantity
+                        as="div"
+                        className="p-2 text-gray-900 text-center"
+                      />
+                      <CartLine.QuantityAdjustButton
+                        adjust="increase"
                         className="p-2"
+                        aria-label="Increase quantity"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -191,36 +227,28 @@ function CartLineItems() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span className="sr-only">Increase quantity</span>
-                      </button>
+                      </CartLine.QuantityAdjustButton>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div role="cell" className="absolute bottom-0 right-0 mb-3">
-                {line.merchandise.priceV2 && (
-                  <Money
-                    money={{
-                      amount: line.merchandise.priceV2.amount * line.quantity,
-                      currencyCode: line.merchandise.priceV2.currencyCode,
-                    }}
-                  ></Money>
-                )}
+                <CartLine.Price
+                  role="cell"
+                  className="absolute bottom-0 right-0 mb-3"
+                />
               </div>
             </div>
           </div>
-        );
-      })}
+        )}
+      </CartLines>
     </div>
   );
 }
 
 function CartFooter() {
   const {subtotal} = useCart();
-  const checkoutURL = useCartCheckoutURL();
 
   return (
-    <footer className="bg-white border-t border-solid border-gray-300 p-8 space-y-4">
+    <>
       <div role="table" className="w-full" aria-label="Cost summary">
         {subtotal && (
           <div role="row" className="flex items-center justify-between">
@@ -228,7 +256,7 @@ function CartFooter() {
               Subtotal
             </div>
             <div role="cell" className="text-right pb-2">
-              <Money money={subtotal}></Money>
+              <Money money={subtotal} />
             </div>
           </div>
         )}
@@ -241,9 +269,12 @@ function CartFooter() {
           </div>
         </div>
       </div>
-      <CheckoutButton className="block cursor-pointer bg-black text-white w-full text-center p-4 hover:bg-gray-800 rounded mb-8 uppercase text-lg">
-        Checkout
-      </CheckoutButton>
-    </footer>
+      <div className="space-y-2">
+        <CartShopPayButton className="flex justify-center w-full" />
+        <CartCheckoutButton className="block w-full text-white uppercase text-sm rounded-md md:mb-8 bg-black px-3 py-4 disabled:cursor-wait disabled:opacity-60">
+          Checkout
+        </CartCheckoutButton>
+      </div>
+    </>
   );
 }

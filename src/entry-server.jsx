@@ -1,6 +1,7 @@
-import App from './App.server';
 import renderHydrogen from '@shopify/hydrogen/entry-server';
 
-export default renderHydrogen(App, ({url}) => {
+import App from './App.server';
+
+export default renderHydrogen(App, () => {
   // Custom hook
 });

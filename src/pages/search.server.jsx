@@ -1,6 +1,8 @@
 import {useEffect, useMemo, useState} from 'react';
 import {useHistory, useLocation} from 'react-router-dom';
 import {useShopQuery, MediaFile} from '@shopify/hydrogen';
+import gql from 'graphql-tag';
+
 import Layout from '../components/Layout.client';
 import ProductCard from '../components/ProductCard.client';
 
@@ -11,7 +13,7 @@ export default function Search() {
   const {search} = useLocation();
   const originalQuery = useMemo(
     () => new URLSearchParams(search).get('query'),
-    [search]
+    [search],
   );
   const history = useHistory();
   const [query, setQuery] = useState(originalQuery);
@@ -27,8 +29,8 @@ export default function Search() {
     <Layout>
       <h1 className="text-2xl font-bold">Search</h1>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           setQuery(newQuery);
           history.push(`/search?query=${newQuery}`);
         }}
@@ -36,11 +38,12 @@ export default function Search() {
       >
         <label htmlFor="search">Search Products:</label>
         <input
+          autocomplete="off"
           name="search"
           id="search"
           type="search"
           value={newQuery}
-          onChange={(e) => setNewQuery(e.target.value)}
+          onChange={(event) => setNewQuery(event.target.value)}
           className="p-1"
         />
         <button type="submit" className="bg-black text-white font-bold p-1">
@@ -76,9 +79,8 @@ function SearchResults({query}) {
   );
 }
 
-const QUERY = `#graphql
-  ${MediaFile.Fragment}
-  fragment ProductDetails on Product {
+const QUERY = gql`
+  fragment SearchProductDetails on Product {
     id
     title
     handle
@@ -95,9 +97,11 @@ const QUERY = `#graphql
     products(query: $query, first: 10) {
       edges {
         node {
-          ...ProductDetails
+          ...SearchProductDetails
         }
       }
     }
   }
+
+  ${MediaFile.Fragment}
 `;

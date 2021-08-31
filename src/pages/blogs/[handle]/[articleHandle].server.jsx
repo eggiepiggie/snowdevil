@@ -1,5 +1,7 @@
-import {RTEText, useShopQuery} from '@shopify/hydrogen';
+import {RawHtml, useShopQuery} from '@shopify/hydrogen';
 import {useParams} from 'react-router-dom';
+import gql from 'graphql-tag';
+
 import Layout from '../../../components/Layout.client';
 
 export default function Article() {
@@ -13,25 +15,32 @@ export default function Article() {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">{article.title}</h1>
-      <p className="font-medium mt-1">
-        Published {new Date(article.publishedAt).toLocaleDateString()} by{' '}
-        {article.author.name}
-      </p>
+      <section className="my-8 px-4 pt-10 pb-4 text-white">
+        <h1 className="text-7xl mb-4 font-semibold tracking-tight">
+          {article.title}
+        </h1>
+      </section>
 
-      <RTEText text={article.contentHtml} className="prose mt-8" />
+      <section className="my-8 bg-white rounded-3xl p-10 sticky shadow-2xl">
+        <p className="font-medium mt-1">
+          Published {new Date(article.publishedAt).toLocaleDateString()} by{' '}
+          {article.author.name}
+        </p>
+
+        <RawHtml string={article.contentHtml} className="prose mt-8" />
+      </section>
     </Layout>
   );
 }
 
-const QUERY = `#graphql
+const QUERY = gql`
   query ArticleDetails($handle: String!, $articleHandle: String!) {
     blogByHandle(handle: $handle) {
       articleByHandle(handle: $articleHandle) {
         title
         contentHtml
         publishedAt
-        author {
+        author: authorV2 {
           name
         }
       }
