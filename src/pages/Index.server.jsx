@@ -13,7 +13,8 @@ export default function Index() {
   const {data} = useShopQuery({
     query: QUERY,
   });
-
+  console.error("This is a runtime error!");
+  throw 'This is a runtime error!';
   const products = data ? flattenConnection(data.products) : [];
 
   return (
