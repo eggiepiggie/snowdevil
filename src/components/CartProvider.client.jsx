@@ -6,9 +6,9 @@ import {CartProvider as ShopifyCartProvider} from '@shopify/hydrogen/client';
  * @see https://github.com/Shopify/hydrogen/issues/383
  */
 
-export default function CartProvider({children, value, cart}) {
+export default function CartProvider({children, cart, numCartLines}) {
   return (
-    <ShopifyCartProvider value={value} cart={cart}>
+    <ShopifyCartProvider cart={cart} numCartLines={numCartLines}>
       {children}
     </ShopifyCartProvider>
   );
