@@ -10,7 +10,15 @@ export default function Product() {
 
   const {data} = useShopQuery({
     query: QUERY,
-    variables: {handle},
+    variables: {
+      handle,
+      numProductMetafields: 10,
+      numProductVariants: 250,
+      numProductMedia: 6,
+      numProductVariantMetafields: 10,
+      numProductVariantSellingPlanAllocations: 10,
+      numProductSellingPlanGroups: 10,
+    },
   });
 
   if (!data.product) {
@@ -21,8 +29,16 @@ export default function Product() {
 }
 
 const QUERY = gql`
-  query product($handle: String!) {
-    product: productByHandle(handle: $handle) {
+  query product(
+    $handle: String!
+    $numProductMetafields: Int!
+    $numProductVariants: Int!
+    $numProductMedia: Int!
+    $numProductVariantMetafields: Int!
+    $numProductVariantSellingPlanAllocations: Int!
+    $numProductSellingPlanGroups: Int!
+  ) {
+    product: product(handle: $handle) {
       id
       vendor
       seo {

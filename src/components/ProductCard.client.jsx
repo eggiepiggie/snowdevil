@@ -4,7 +4,6 @@ import {
   ProductTitle,
   SelectedVariantImage,
   SelectedVariantPrice,
-  SelectedVariantCompareAtPrice,
 } from '@shopify/hydrogen/client';
 
 export default function ProductCard({product}) {
@@ -26,11 +25,14 @@ export default function ProductCard({product}) {
             );
           }}
         </SelectedVariantPrice>
-        <SelectedVariantCompareAtPrice className="text-gray-400 line-through">
+        <SelectedVariantPrice
+          priceType="compareAt"
+          className="text-gray-400 line-through"
+        >
           {({amount, currencyNarrowSymbol}) => {
             return <span>{`${currencyNarrowSymbol}${amount}`}</span>;
           }}
-        </SelectedVariantCompareAtPrice>
+        </SelectedVariantPrice>
       </div>
     </ProductProvider>
   );

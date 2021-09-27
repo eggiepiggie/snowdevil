@@ -1,13 +1,13 @@
 import {
   useCart,
   useCartLinesTotalQuantity,
-  Money,
   CartToggle,
   CartCheckoutButton,
   Link,
   CartLines,
   CartLine,
   CartShopPayButton,
+  CartEstimatedCost,
 } from '@shopify/hydrogen/client';
 
 export default function Cart() {
@@ -245,21 +245,19 @@ function CartLineItems() {
 }
 
 function CartFooter() {
-  const {subtotal} = useCart();
-
   return (
     <>
       <div role="table" className="w-full" aria-label="Cost summary">
-        {subtotal && (
-          <div role="row" className="flex items-center justify-between">
-            <div role="rowheader" className="pb-2 font-semibold">
-              Subtotal
-            </div>
-            <div role="cell" className="text-right pb-2">
-              <Money money={subtotal} />
-            </div>
+        <div role="row" className="flex items-center justify-between">
+          <div role="rowheader" className="font-semibold">
+            Subtotal
           </div>
-        )}
+          <CartEstimatedCost
+            amountType="subtotal"
+            role="cell"
+            className="text-right"
+          />
+        </div>
         <div role="row" className="flex items-center justify-between">
           <div role="rowheader" className="font-semibold">
             Shipping
@@ -267,6 +265,16 @@ function CartFooter() {
           <div role="cell" className="text-right">
             Free
           </div>
+        </div>
+        <div role="row" className="flex items-center justify-between">
+          <div role="rowheader" className="font-semibold">
+            Total
+          </div>
+          <CartEstimatedCost
+            amountType="total"
+            role="cell"
+            className="text-right"
+          />
         </div>
       </div>
       <div className="space-y-2">

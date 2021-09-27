@@ -8,10 +8,20 @@ import gql from 'graphql-tag';
 import HighlightedProduct from '../components/HightlightedProduct.client';
 import Layout from '../components/Layout.client';
 import ProductCard from '../components/ProductCard.client';
+import MediaPlaceholder from '../components/MediaPlaceholder';
 
 export default function Index() {
   const {data} = useShopQuery({
     query: QUERY,
+    variables: {
+      numProducts: 3,
+      numProductMetafields: 0,
+      numProductVariants: 250,
+      numProductMedia: 1,
+      numProductVariantMetafields: 10,
+      numProductVariantSellingPlanAllocations: 10,
+      numProductSellingPlanGroups: 10,
+    },
   });
 
   const products = data ? flattenConnection(data.products) : [];
@@ -29,20 +39,26 @@ export default function Index() {
             <CommerceReadyComponents />
           </div>
           <div className="col-span-2 md:flex shadow-xl p-4 md:p-6 rounded-md bg-white">
-            <HighlightedProduct product={products[0]} />
+            {products[0] ? (
+              <HighlightedProduct product={products[0]} />
+            ) : (
+              <MediaPlaceholder text="Your product here" />
+            )}
           </div>
         </section>
 
-        <section className="space-y-6 md:space-y-0 md:grid grid-cols-3 gap-10 flex flex-col-reverse flex-col">
-          <div className="col-span-2 md:flex shadow-xl p-4 md:p-6 rounded-md space-y-6 md:space-y-0 md:space-x-6 bg-white">
-            {[products[1], products[2]].map((product) => {
-              return (
-                <div key={product.id}>
-                  <ProductCard product={product} />
-                </div>
-              );
-            })}
-          </div>
+        <section className="space-y-6 md:space-y-0 md:grid grid-cols-3 gap-10 flex flex-col-reverse">
+          {products.length > 2 && (
+            <div className="col-span-2 md:flex shadow-xl p-4 md:p-6 rounded-md space-y-6 md:space-y-0 md:space-x-6 bg-white">
+              {[products[1], products[2]].map((product) => {
+                return (
+                  <div key={product.id}>
+                    <ProductCard product={product} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <div>
             <StyleWithTailwind />
           </div>
@@ -159,24 +175,19 @@ function StyleWithTailwind() {
 }
 
 const QUERY = gql`
-  query indexContent {
-    products(first: 3) {
+  query indexContent(
+    $numProducts: Int!
+    $numProductMetafields: Int!
+    $numProductVariants: Int!
+    $numProductMedia: Int!
+    $numProductVariantMetafields: Int!
+    $numProductVariantSellingPlanAllocations: Int!
+    $numProductSellingPlanGroups: Int!
+  ) {
+    products(first: $numProducts) {
       edges {
         node {
           ...ProductProviderFragment
-        }
-      }
-    }
-    collections(first: 3) {
-      edges {
-        node {
-          id
-          title
-          handle
-          image {
-            originalSrc
-            altText
-          }
         }
       }
     }

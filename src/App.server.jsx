@@ -19,21 +19,23 @@ export default function App({...serverState}) {
     <ShopifyServerProvider shopifyConfig={shopifyConfig} {...serverState}>
       {/* START: Workaround for CartContext */}
       <CartServerProvider request={serverState.request}>
-        {({value: cartProviderValue, cart}) => (
-          <CartProvider value={cartProviderValue} cart={cart}>
-            {/* END: Workaround for CartContext */}
-            <Suspense fallback="Loading...">
-              <DefaultSeo />
-              <Switch>
-                <DefaultRoutes
-                  pages={pages}
-                  serverState={serverState}
-                  fallback={<NotFound />}
-                />
-              </Switch>
-            </Suspense>
-          </CartProvider>
-        )}
+        {({cart, numCartLines}) => {
+          return (
+            <CartProvider cart={cart} numCartLines={numCartLines}>
+              {/* END: Workaround for CartContext */}
+              <Suspense fallback="Loading...">
+                <DefaultSeo />
+                <Switch>
+                  <DefaultRoutes
+                    pages={pages}
+                    serverState={serverState}
+                    fallback={<NotFound />}
+                  />
+                </Switch>
+              </Suspense>
+            </CartProvider>
+          );
+        }}
       </CartServerProvider>
     </ShopifyServerProvider>
   );
