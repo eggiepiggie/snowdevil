@@ -3,7 +3,6 @@ import {
   SelectedVariantImage,
   ProductTitle,
   SelectedVariantPrice,
-  SelectedVariantCompareAtPrice,
   SelectedVariantAddToCartButton,
   Link,
 } from '@shopify/hydrogen/client';
@@ -33,11 +32,14 @@ export default function HighlightedProduct({product}) {
               );
             }}
           </SelectedVariantPrice>
-          <SelectedVariantCompareAtPrice className="text-gray-400 line-through md:text-xl">
+          <SelectedVariantPrice
+            priceType="compareAt"
+            className="text-gray-400 line-through md:text-xl"
+          >
             {({amount, currencyNarrowSymbol}) => {
               return <span>{`${currencyNarrowSymbol}${amount}`}</span>;
             }}
-          </SelectedVariantCompareAtPrice>
+          </SelectedVariantPrice>
         </div>
         <ProductOptions />
         <SelectedVariantAddToCartButton className="rounded-md bg-gray-900 text-white text-center p-4 text-sm uppercase w-full mt-4 mb-2">
