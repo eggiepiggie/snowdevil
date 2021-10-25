@@ -19,7 +19,7 @@ function GalleryPreview() {
     <ul className="grid lg:grid-cols-2 gap-10">
       {media.map((med) => {
         return (
-          <li key={med.id} className="relative">
+          <li key={med.id || med.image.id} className="relative">
             <MediaFile
               className="w-full bg-white rounded-md object-cover"
               media={med}

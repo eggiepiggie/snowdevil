@@ -1,4 +1,4 @@
-import {useShopQuery, MediaFile} from '@shopify/hydrogen';
+import {useShopQuery, MediaFileFragment} from '@shopify/hydrogen';
 import {Link} from '@shopify/hydrogen/client';
 import gql from 'graphql-tag';
 
@@ -100,5 +100,5 @@ const QUERY = gql`
     }
   }
 
-  ${MediaFile.Fragment}
+  ${MediaFileFragment}
 `;

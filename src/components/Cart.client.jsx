@@ -1,7 +1,7 @@
+import FocusTrap from 'focus-trap-react';
 import {
   useCart,
   useCartLinesTotalQuantity,
-  CartToggle,
   CartCheckoutButton,
   Link,
   CartLines,
@@ -10,94 +10,75 @@ import {
   CartEstimatedCost,
 } from '@shopify/hydrogen/client';
 
+import {useCartUI} from './CartUIProvider.client';
+
 export default function Cart() {
+  const {isCartOpen} = useCartUI();
   const itemCount = useCartLinesTotalQuantity();
   const {error} = useCart();
 
   return (
-    <div className="overflow-hidden md:h-auto pointer-events-auto">
-      <div className="flex flex-col shadow-xl max-h-full">
-        <header className="bg-white px-4 md:px-8 md:h-20 border-b border-gray-300 border-solid rounded-t-md flex flex-shrink-0 items-center justify-between">
-          <CartHeader />
-        </header>
-
-        <div className="bg-white px-4 md:px-8 overflow-y-scroll md:max-h-96">
-          {itemCount > 0 ? (
-            <CartLineItems />
-          ) : (
-            <p className="text-center text-gray-600 my-8">Your cart is empty</p>
-          )}
-        </div>
-
-        {error ? (
-          <div
-            className="border bg-red-200 border-red-400 text-red-800 mb-4 mx-8 px-4 py-3 rounded relative"
-            role="alert"
-          >
-            {error}
-          </div>
-        ) : null}
-
-        <footer
-          className={`${
-            itemCount > 0 ? 'border-t border-solid border-gray-300' : ''
-          } bg-white p-4 md:p-8 space-y-4 flex-shrink-0 rounded-b-md`}
-        >
-          {itemCount > 0 ? <CartFooter /> : null}
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-export function CartIcon() {
-  const itemCount = useCartLinesTotalQuantity();
-
-  return (
-    <div className="relative">
-      <svg
-        width="19"
-        height="24"
-        viewBox="0 0 19 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M15.5894 7H3.41063C2.89451 7 2.46318 7.39279 2.415 7.90666L1.205 20.8133C1.09502 21.9865 2.01796 23 3.19627 23H15.8037C16.982 23 17.905 21.9865 17.795 20.8133L16.585 7.90666C16.5368 7.39279 16.1055 7 15.5894 7Z"
-          stroke="#1F2937"
-          strokeWidth="2"
-          strokeMiterlimit="10"
-          strokeLinecap="round"
-        />
-        <path
-          d="M6 7V9.98952C6 12.0075 7.63589 13.6434 9.65386 13.6434V13.6434C11.6718 13.6434 13.3077 12.0075 13.3077 9.98952V7"
-          stroke="#1F2937"
-          strokeWidth="2"
-        />
-        <path
-          d="M13 6L13 4.5C13 2.567 11.433 1 9.5 1V1C7.567 1 6 2.567 6 4.5L6 6"
-          stroke="#1F2937"
-          strokeWidth="2"
-          className={`${itemCount > 0 ? 'block' : 'hidden'}`}
-        />
-      </svg>
-
-      <div
-        className={`bg-blue-600 text-xs rounded-full leading-none text-white absolute bottom-0 right-0 flex items-center justify-center transform translate-y-1/2 transition-all ${
-          itemCount > 0 ? 'h-4 w-4' : 'h-0 w-0 overflow-hidden'
+    <FocusTrap active={isCartOpen} focusTrapOptions={{allowOutsideClick: true}}>
+      <aside
+        className={`pointer-events-none z-50 fixed right-0 top-0 bottom-0 md:p-5 flex flex-col w-full max-w-md min-w-sm transition-transform duration-500 transform-gpu ${
+          isCartOpen ? 'right-0' : 'translate-x-full'
         }`}
+        id="cart"
+        tabIndex={-1}
+        aria-hidden={!isCartOpen}
+        aria-label="Cart"
       >
-        {itemCount > 0 ? itemCount : null}
-      </div>
-      <span className="sr-only">Cart, {itemCount} items</span>
-    </div>
+        <div className="overflow-hidden md:h-auto pointer-events-auto">
+          <div className="flex flex-col shadow-xl max-h-full">
+            <header className="bg-white px-4 md:px-8 md:h-20 border-b border-gray-300 border-solid rounded-t-md flex flex-shrink-0 items-center justify-between">
+              <CartHeader />
+            </header>
+
+            <div className="bg-white px-4 md:px-8 overflow-y-scroll md:max-h-96">
+              {itemCount > 0 ? (
+                <CartLineItems />
+              ) : (
+                <p className="text-center text-gray-600 my-8">
+                  Your cart is empty
+                </p>
+              )}
+            </div>
+
+            {error ? (
+              <div
+                className="border bg-red-200 border-red-400 text-red-800 mb-4 mx-8 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                {error}
+              </div>
+            ) : null}
+
+            <footer
+              className={`${
+                itemCount > 0 ? 'border-t border-solid border-gray-300' : ''
+              } bg-white p-4 md:p-8 space-y-4 flex-shrink-0 rounded-b-md`}
+            >
+              {itemCount > 0 ? <CartFooter /> : null}
+            </footer>
+          </div>
+        </div>
+      </aside>
+    </FocusTrap>
   );
 }
 
 function CartHeader() {
+  const {isCartOpen, toggleCart} = useCartUI();
+  const itemCount = useCartLinesTotalQuantity();
+
   return (
     <>
-      <CartToggle>
+      <button
+        type="button"
+        aria-expanded={isCartOpen}
+        aria-controls="cart"
+        onClick={toggleCart}
+      >
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -113,9 +94,36 @@ function CartHeader() {
           </svg>
         </div>
         <span className="sr-only">Close cart</span>
-      </CartToggle>
+      </button>
       <div className="h-12 w-12 p-2 md:h-7 md:w-7 md:p-0">
-        <CartIcon />
+        <div className="relative">
+          <svg
+            width="19"
+            height="24"
+            viewBox="0 0 19 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.5894 7H3.41063C2.89451 7 2.46318 7.39279 2.415 7.90666L1.205 20.8133C1.09502 21.9865 2.01796 23 3.19627 23H15.8037C16.982 23 17.905 21.9865 17.795 20.8133L16.585 7.90666C16.5368 7.39279 16.1055 7 15.5894 7Z"
+              stroke="#1F2937"
+              strokeWidth="2"
+              strokeMiterlimit="10"
+              strokeLinecap="round"
+            />
+            <path
+              d="M6 7V9.98952C6 12.0075 7.63589 13.6434 9.65386 13.6434V13.6434C11.6718 13.6434 13.3077 12.0075 13.3077 9.98952V7"
+              stroke="#1F2937"
+              strokeWidth="2"
+            />
+            <path
+              d="M13 6L13 4.5C13 2.567 11.433 1 9.5 1V1C7.567 1 6 2.567 6 4.5L6 6"
+              stroke="#1F2937"
+              strokeWidth="2"
+              className={`${itemCount > 0 ? 'block' : 'hidden'}`}
+            />
+          </svg>
+        </div>
       </div>
     </>
   );

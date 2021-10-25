@@ -1,22 +1,9 @@
-import {
-  CartUIProvider,
-  CartContainer,
-  useCartUI,
-} from '@shopify/hydrogen/client';
-
 import Header from './Header.client';
 import Footer from './Footer';
+import {useCartUI} from './CartUIProvider.client';
 import Cart from './Cart.client';
 
 export default function Layout({children}) {
-  return (
-    <CartUIProvider>
-      <InnerLayout>{children}</InnerLayout>
-    </CartUIProvider>
-  );
-}
-
-function InnerLayout({children}) {
   const {isCartOpen, closeCart} = useCartUI();
 
   return (
@@ -39,14 +26,7 @@ function InnerLayout({children}) {
             }`}
             onClick={isCartOpen ? closeCart : null}
           />
-          <CartContainer
-            id="cart"
-            className={`pointer-events-none z-50 fixed right-0 top-0 bottom-0 md:p-5 flex flex-col w-full max-w-md min-w-sm transition-transform duration-500 transform-gpu ${
-              isCartOpen ? 'right-0' : 'translate-x-full'
-            }`}
-          >
-            <Cart />
-          </CartContainer>
+          <Cart />
         </div>
         <main
           id="mainContent"

@@ -5,7 +5,7 @@ import {
 } from '@shopify/hydrogen';
 import gql from 'graphql-tag';
 
-import HighlightedProduct from '../components/HightlightedProduct.client';
+import HighlightedProduct from '../components/HighlightedProduct.client';
 import Layout from '../components/Layout.client';
 import ProductCard from '../components/ProductCard.client';
 import MediaPlaceholder from '../components/MediaPlaceholder';
@@ -21,6 +21,7 @@ export default function Index() {
       numProductVariantMetafields: 10,
       numProductVariantSellingPlanAllocations: 10,
       numProductSellingPlanGroups: 10,
+      numProductSellingPlans: 10,
     },
   });
 
@@ -183,6 +184,7 @@ const QUERY = gql`
     $numProductVariantMetafields: Int!
     $numProductVariantSellingPlanAllocations: Int!
     $numProductSellingPlanGroups: Int!
+    $numProductSellingPlans: Int!
   ) {
     products(first: $numProducts) {
       edges {

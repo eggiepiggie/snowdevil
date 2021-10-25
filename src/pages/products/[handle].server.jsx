@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 
 import ProductDetails from '../../components/ProductDetails.client';
 import NotFound from '../../components/NotFound.server';
+import Layout from '../../components/Layout.client';
 
 export default function Product() {
   const {handle} = useParams();
@@ -18,6 +19,7 @@ export default function Product() {
       numProductVariantMetafields: 10,
       numProductVariantSellingPlanAllocations: 10,
       numProductSellingPlanGroups: 10,
+      numProductSellingPlans: 10,
     },
   });
 
@@ -25,7 +27,11 @@ export default function Product() {
     return <NotFound />;
   }
 
-  return <ProductDetails data={data} />;
+  return (
+    <Layout>
+      <ProductDetails product={data.product} />
+    </Layout>
+  );
 }
 
 const QUERY = gql`
@@ -37,6 +43,7 @@ const QUERY = gql`
     $numProductVariantMetafields: Int!
     $numProductVariantSellingPlanAllocations: Int!
     $numProductSellingPlanGroups: Int!
+    $numProductSellingPlans: Int!
   ) {
     product: product(handle: $handle) {
       id

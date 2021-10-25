@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 import {useHistory, useLocation} from 'react-router-dom';
-import {useShopQuery, MediaFile} from '@shopify/hydrogen';
+import {useShopQuery, MediaFileFragment} from '@shopify/hydrogen';
 import gql from 'graphql-tag';
 
 import Layout from '../components/Layout.client';
@@ -103,5 +103,5 @@ const QUERY = gql`
     }
   }
 
-  ${MediaFile.Fragment}
+  ${MediaFileFragment}
 `;
