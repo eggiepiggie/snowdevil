@@ -1,18 +1,15 @@
-import {Product} from '@shopify/hydrogen/client';
+import {Product, flattenConnection} from '@shopify/hydrogen/client';
 
-import Layout from './Layout.client';
 import ProductOptions from './ProductOptions.client';
 import Gallery from './Gallery.client';
 import Seo from './Seo.client';
 
-export default function ProductDetails({data}) {
+export default function ProductDetails({product}) {
+  const initialVariant = flattenConnection(product.variants)[0];
   return (
-    <Layout>
-      <Seo product={data.product} />
-      <Product
-        product={data.product}
-        initialVariantId={data.product.variants.edges[0].node.id}
-      >
+    <>
+      <Seo product={product} />
+      <Product product={product} initialVariantId={initialVariant.id}>
         <div className="py-4 md:grid md:grid-cols-2 lg:grid-cols-3 gap-12">
           <div className="md:hidden pb-4 flex justify-between items-top">
             <Product.Title as="h1" className="font-bold text-2xl" />
@@ -179,6 +176,6 @@ export default function ProductDetails({data}) {
           </section>
         </div>
       </Product>
-    </Layout>
+    </>
   );
 }

@@ -7,14 +7,14 @@ import {
 } from '@shopify/hydrogen/client';
 
 export default function ProductCard({product}) {
-  const firstVariant = product?.variants?.edges[0]?.node;
-
   if (!product) return null;
+
+  const firstVariant = product.variants?.edges[0]?.node;
 
   return (
     <ProductProvider product={product} initialVariantId={firstVariant.id}>
       <Link to={`/products/${product.handle}`}>
-        <SelectedVariantImage className="rounded-md bg-gray-100 h-80 w-96 mb-2" />
+        <SelectedVariantImage className="rounded-md bg-gray-100 h-80 w-96 mb-2 object-cover" />
         <ProductTitle className="text-gray-900 font-medium" />
       </Link>
       <div className="flex items-center">
