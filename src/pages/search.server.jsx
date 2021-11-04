@@ -3,8 +3,8 @@ import {useHistory, useLocation} from 'react-router-dom';
 import {useShopQuery, MediaFileFragment} from '@shopify/hydrogen';
 import gql from 'graphql-tag';
 
-import Layout from '../components/Layout.client';
-import ProductCard from '../components/ProductCard.client';
+import Layout from '../components/Layout.server';
+import ProductCard from '../components/ProductCard.server';
 
 /**
  * TODO: Refactor to a true server component.

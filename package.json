@@ -1,7 +1,7 @@
 {
-  "name": "dev",
+  "name": "hydrogen-app",
   "description": "This is a dev environment for Hydrogen",
-  "version": "0.3.0",
+  "version": "0.5.8",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "@shopify/eslint-plugin": "^40.4.0",
     "@shopify/prettier-config": "^1.1.2",
     "@shopify/stylelint-plugin": "^10.0.1",
+    "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/typography": "^0.4.0",
     "autoprefixer": "^10.2.5",
     "eslint": "^7.31.0",
@@ -31,10 +32,10 @@
     "vite": "^2.6.0"
   },
   "dependencies": {
-    "@shopify/hydrogen": "^0.3.0",
+    "@headlessui/react": "^1.4.1",
+    "@shopify/hydrogen": "^0.5.8",
     "compression": "^1.7.4",
     "express": "^4.17.1",
-    "focus-trap-react": "^8.8.1",
     "graphql-tag": "^2.12.4",
     "react": "18.0.0-alpha-e6be2d531",
     "react-dom": "18.0.0-alpha-e6be2d531",
