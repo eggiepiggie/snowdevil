@@ -1,69 +1,97 @@
-import {MediaFileFragment, useShopQuery} from '@shopify/hydrogen';
+import {
+  MediaFileFragment,
+  ProductProviderFragment,
+  useShopQuery,
+  flattenConnection,
+  RawHtml,
+} from '@shopify/hydrogen';
 import {useParams} from 'react-router-dom';
 import gql from 'graphql-tag';
 
-import Layout from '../../components/Layout.client';
-import ProductCard from '../../components/ProductCard.client';
+import LoadMoreProducts from '../../components/LoadMoreProducts.client';
+import Layout from '../../components/Layout.server';
+import ProductCardAdvanced from '../../components/ProductCardAdvanced.client';
+import NotFound from '../../components/NotFound.server';
 
-export default function Collection() {
+export default function Collection({
+  country = {isoCode: 'US'},
+  collectionProductCount = 24,
+}) {
   const {handle} = useParams();
-  const {data} = useShopQuery({query: QUERY, variables: {handle}});
+  const {data} = useShopQuery({
+    query: QUERY,
+    variables: {
+      handle,
+      country: country.isoCode,
+      numProducts: collectionProductCount,
+    },
+  });
 
-  const collection = data.collectionByHandle;
+  if (data?.collection == null) {
+    return <NotFound />;
+  }
+
+  const collection = data.collection;
+  const products = flattenConnection(collection.products);
+  const hasNextPage = data.collection.products.pageInfo.hasNextPage;
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">{collection.title}</h1>
+      <h1 className="font-black text-4xl md:text-5xl text-black mb-6 mt-6">
+        {collection.title}
+      </h1>
+      <RawHtml string={collection.descriptionHtml} className="text-2xl" />
+      <p className="text-sm text-gray-900 mt-5 mb-5">
+        {products.length} {products.length > 1 ? 'products' : 'product'}
+      </p>
 
-      <ul className="grid lg:grid-cols-3 gap-6 mt-4">
-        {collection.products.edges.map((edge) => (
-          <li key={edge.node.id}>
-            <ProductCard product={edge.node} />
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {products.map((product) => (
+          <li key={product.id}>
+            <ProductCardAdvanced product={product} />
           </li>
         ))}
       </ul>
+
+      {hasNextPage && (
+        <LoadMoreProducts startingCount={collectionProductCount} />
+      )}
     </Layout>
   );
 }
 
 const QUERY = gql`
-  fragment CollectionProductDetails on Product {
-    id
-    title
-    handle
-    priceRange {
-      maxVariantPrice {
-        amount
-        currencyCode
-      }
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    media(first: 1) {
-      edges {
-        node {
-          ...MediaFileFragment
-        }
-      }
-    }
-  }
-
-  query CollectionDetails($handle: String!) {
-    collectionByHandle(handle: $handle) {
+  query CollectionDetails(
+    $handle: String!
+    $country: CountryCode
+    $numProducts: Int!
+    $numProductMetafields: Int = 0
+    $numProductVariants: Int = 250
+    $numProductMedia: Int = 6
+    $numProductVariantMetafields: Int = 0
+    $numProductVariantSellingPlanAllocations: Int = 0
+    $numProductSellingPlanGroups: Int = 0
+    $numProductSellingPlans: Int = 0
+  ) @inContext(country: $country) {
+    collection(handle: $handle) {
       id
       title
+      descriptionHtml
 
-      products(first: 10) {
+      products(first: $numProducts) {
         edges {
           node {
-            ...CollectionProductDetails
+            vendor
+            ...ProductProviderFragment
           }
+        }
+        pageInfo {
+          hasNextPage
         }
       }
     }
   }
 
   ${MediaFileFragment}
+  ${ProductProviderFragment}
 `;

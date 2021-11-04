@@ -2,7 +2,7 @@ import {useParams} from 'react-router-dom';
 import {useShopQuery, RawHtml, Link} from '@shopify/hydrogen';
 import gql from 'graphql-tag';
 
-import Layout from '../../components/Layout.client';
+import Layout from '../../components/Layout.server';
 
 export default function Blog() {
   const {handle} = useParams();

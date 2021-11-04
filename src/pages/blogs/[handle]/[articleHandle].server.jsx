@@ -2,7 +2,7 @@ import {RawHtml, useShopQuery} from '@shopify/hydrogen';
 import {useParams} from 'react-router-dom';
 import gql from 'graphql-tag';
 
-import Layout from '../../../components/Layout.client';
+import Layout from '../../../components/Layout.server';
 
 export default function Article() {
   const {handle, articleHandle} = useParams();

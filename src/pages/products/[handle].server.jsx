@@ -4,22 +4,16 @@ import gql from 'graphql-tag';
 
 import ProductDetails from '../../components/ProductDetails.client';
 import NotFound from '../../components/NotFound.server';
-import Layout from '../../components/Layout.client';
+import Layout from '../../components/Layout.server';
 
-export default function Product() {
+export default function Product({country = {isoCode: 'US'}}) {
   const {handle} = useParams();
 
   const {data} = useShopQuery({
     query: QUERY,
     variables: {
+      country: country.isoCode,
       handle,
-      numProductMetafields: 10,
-      numProductVariants: 250,
-      numProductMedia: 6,
-      numProductVariantMetafields: 10,
-      numProductVariantSellingPlanAllocations: 10,
-      numProductSellingPlanGroups: 10,
-      numProductSellingPlans: 10,
     },
   });
 
@@ -36,15 +30,16 @@ export default function Product() {
 
 const QUERY = gql`
   query product(
+    $country: CountryCode
     $handle: String!
-    $numProductMetafields: Int!
-    $numProductVariants: Int!
-    $numProductMedia: Int!
-    $numProductVariantMetafields: Int!
-    $numProductVariantSellingPlanAllocations: Int!
-    $numProductSellingPlanGroups: Int!
-    $numProductSellingPlans: Int!
-  ) {
+    $numProductMetafields: Int = 20
+    $numProductVariants: Int = 250
+    $numProductMedia: Int = 6
+    $numProductVariantMetafields: Int = 10
+    $numProductVariantSellingPlanAllocations: Int = 0
+    $numProductSellingPlanGroups: Int = 0
+    $numProductSellingPlans: Int = 0
+  ) @inContext(country: $country) {
     product: product(handle: $handle) {
       id
       vendor

@@ -10,6 +10,7 @@ addEventListener('fetch', (event) => {
         entrypoint,
         indexTemplate: indexHtml,
         cache: caches.default,
+        context: event,
       }),
     );
   } catch (error) {

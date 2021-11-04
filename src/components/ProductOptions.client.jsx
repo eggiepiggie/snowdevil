@@ -7,11 +7,11 @@ export default function ProductOptions() {
     <>
       {options.map(({name, values}) => {
         return (
-          <fieldset key={name} className="mb-6">
+          <fieldset key={name} className="mb-8">
             <legend className="mb-2 d:mb-4 md:text-xl font-medium text-gray-900">
               {name}
             </legend>
-            <div className="flex items-center flex-wrap gap-2">
+            <div className="flex items-center flex-wrap gap-4">
               {values.map((value) => {
                 const checked = selectedOptions[name] === value;
                 const id = `option-${name}-${value}`;
@@ -28,7 +28,7 @@ export default function ProductOptions() {
                       onChange={() => setSelectedOption(name, value)}
                     />
                     <div
-                      className={`p-2 border rounded-md cursor-pointer text-sm md:text-md ${
+                      className={`p-2 border cursor-pointer text-sm md:text-md ${
                         checked ? 'bg-gray-900 text-white' : 'text-gray-900'
                       }`}
                     >
