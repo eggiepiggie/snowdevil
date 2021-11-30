@@ -30,4 +30,3 @@ Then, you can run a local `server.js` using the production build with:
 yarn serve
 ```
 eggie was here
-beep boop
