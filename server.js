@@ -1,10 +1,10 @@
 // @ts-check
 const fs = require('fs');
+const bodyParser = require('body-parser');
 const path = require('path');
 const express = require('express');
 
-// TODO: Make it so we don't have to call `.default` at the end of this
-const hydrogenMiddleware = require('@shopify/hydrogen/middleware').default;
+const {hydrogenMiddleware} = require('@shopify/hydrogen/middleware');
 
 const resolve = (p) => path.resolve(__dirname, p);
 
@@ -19,6 +19,8 @@ async function createServer() {
       index: false,
     }),
   );
+
+  app.use('*', bodyParser.raw({type: '*/*'}));
 
   app.use(
     '*',
