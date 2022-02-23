@@ -30,7 +30,7 @@ jobs:
       # Production build
       - name: Build
         id: storefront-build
-        run: yarn build
+        run: HYDROGEN_ASSET_BASE_URL=https://cdn.shopify.com/oxygen/51529482423/98487/abc/ yarn build
 
       # Publish to Oxygen
       - name: Publish
