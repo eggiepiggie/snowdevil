@@ -14,6 +14,13 @@ jobs:
         with:
           node-version: '14'
           check-latest: true
+  
+      - name: Create a hydrogen app
+        run: |
+          npm --version
+          npm init hydrogen-app@latest -- --template hydrogen hydrogen-app
+
+  
       - name: Get yarn cache directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -23,14 +30,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        id: 'install-dependencies'
-        run: yarn
-
-      # Production build
-      - name: Build
-        id: storefront-build
-        run: HYDROGEN_ASSET_BASE_URL=https://cdn.shopify.com/oxygen/51529482423/98487/abc/ yarn build
+            
+      - name: Install dependencies + build
+        run: |
+          cd hydrogen-app
+          yarn
+          HYDROGEN_ASSET_BASE_URL=https://cdn.shopify.com/oxygen/51529482423/98487/abc/ yarn build
 
       # Publish to Oxygen
       - name: Publish
