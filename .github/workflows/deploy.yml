@@ -26,8 +26,8 @@ jobs:
       - name: Generate deployment ULID
         id: deployment-id
         run: |
-          npm i ulid
-          echo "::set-output name=ULID::$(npm exec ulid)"
+          yarn add ulid
+          echo "::set-output name=ULID::$(npm exec ulid | tr '[:upper:]' '[:lower:]')"
       - name: Set asset base URL
         shell: bash
         run: echo "::set-output name=URL::https://cdn.shopify.com/oxygen/%d/%d/${{ steps.deployment-id.outputs.ULID }}/"
