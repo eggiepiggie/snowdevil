@@ -5,16 +5,17 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      # Checkout code
       - uses: actions/checkout@v2
-
-      # Install dependencies
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
           check-latest: true
-  
+      - name: Generate deployment ULID
+        id: deployment-id
+        run: |
+          npm i ulid
+          echo "::set-output name=ULID::$(npm exec ulid)"
       - name: Get yarn cache directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -24,19 +25,22 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-            
-      - name: Install dependencies + build
-        run: |
-          yarn
-          HYDROGEN_ASSET_BASE_URL=https://cdn.shopify.com/oxygen/51529482423/98487/abc/ yarn build
-
-      # Publish to Oxygen
-      - name: Publish
+      - name: Set asset base URL
+        shell: bash
+        run: echo "::set-output name=URL::https://cdn.shopify.com/oxygen/%d/%d/${{ steps.deployment-id.outputs.ULID }}/"
+        id: base-url
+      - name: Install dependencies
+        id: 'install-dependencies'
+        run: yarn
+      - name: Production build
+        id: storefront-build
+        run: HYDROGEN_ASSET_BASE_URL=${{ steps.base-url.outputs.URL }} yarn build
+      - name: Publish to Oxygen
         id: deploy
-        uses: shopify/oxygenctl-action@v1
+        uses: shopify/oxygenctl-action@v2
         with:
+          deployment_id: ${{ steps.deployment-id.outputs.ULID }}
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
-
       # Create GitHub Deployment
       - name: Create GitHub Deployment
         uses: shopify/github-deployment-action@v1
