@@ -38,6 +38,7 @@ jobs:
         uses: shopify/oxygenctl-action@v1
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
 
       # Create GitHub Deployment
       - name: Create GitHub Deployment
