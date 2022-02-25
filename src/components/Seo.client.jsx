@@ -1,5 +1,8 @@
 import {useShop, Helmet} from '@shopify/hydrogen/client';
 
+/**
+ * A client component that customizes the output of SEO-related tags in your document `head`
+ */
 export default function Seo({shopName, product}) {
   const {locale} = useShop();
   const lang = locale.split(/[-_]/)[0];
@@ -25,10 +28,8 @@ export default function Seo({shopName, product}) {
         <meta property="og:price:amount" content={price.amount} />
         <meta property="og:price:currency" content={price.currencyCode} />
 
-        {image && <meta property="og:image" content={image.originalSrc} />}
-        {image && (
-          <meta property="og:image:secure_url" content={image.originalSrc} />
-        )}
+        {image && <meta property="og:image" content={image.url} />}
+        {image && <meta property="og:image:secure_url" content={image.url} />}
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
@@ -40,7 +41,7 @@ export default function Seo({shopName, product}) {
             "@type": "Product",
             "name": "${product.title}",
             "image": [
-              ${image ? `"${image.originalSrc}"` : ''}
+              ${image ? `"${image.url}"` : ''}
             ],
             "description": "${description}",
             "brand": {

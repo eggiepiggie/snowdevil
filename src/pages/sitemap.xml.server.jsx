@@ -28,7 +28,7 @@ function shopSitemap(data) {
             <changefreq>daily</changefreq>
             <image:image>
               <image:loc>
-                ${product?.images?.edges?.[0]?.node?.originalSrc}
+                ${product?.images?.edges?.[0]?.node?.url}
               </image:loc>
               <image:title>
                 ${product?.images?.edges?.[0]?.node?.altText ?? ''}
@@ -52,7 +52,7 @@ const QUERY = gql`
           images(first: 1) {
             edges {
               node {
-                originalSrc
+                url
                 altText
               }
             }

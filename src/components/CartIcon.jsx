@@ -1,6 +1,10 @@
+/**
+ * A shared component that specifies the icon to represent a cart
+ */
 export default function CartIcon() {
   return (
     <svg
+      aria-hidden="true"
       width="40"
       height="40"
       viewBox="0 0 40 40"
